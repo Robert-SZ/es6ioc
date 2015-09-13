@@ -1,0 +1,11 @@
+# Mac desktop service store files
+.DS_Store
+
+node_modules/
+bower_components/
+.idea/
+dist/
+npm-debug.log
+*.nupkg
+config.dev.json
+/temp

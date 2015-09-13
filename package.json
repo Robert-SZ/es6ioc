@@ -1,0 +1,24 @@
+{
+  "name": "es6ioc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "karma start"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jasmine": "^2.3.2",
+    "jasmine-core": "^2.3.4",
+    "karma": "^0.13.9",
+    "browserify": "^9.0.3",
+    "babelify": "~5.0.3",
+    "karma-browserify": "~3.0.2",
+    "karma-jasmine": "~0.3.5",
+    "karma-phantomjs-launcher": "~0.1.4"
+  }
+}
