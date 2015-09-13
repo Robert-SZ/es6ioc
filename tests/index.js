@@ -2,7 +2,7 @@
  * Created by RobertSabiryanov on 11.09.15.
  */
 
-import {Controller} from '../src/controller.js';
+import {Controller} from '../example/controller.js';
 
 describe('Controller', () => {
     it('ioc', () => {
