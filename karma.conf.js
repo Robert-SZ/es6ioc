@@ -5,6 +5,7 @@ module.exports = function(config) {
     frameworks: ['browserify', 'jasmine'],
 
     files: [
+      'example/*.js',
       'src/*.js',
       'tests/*.js'
     ],
@@ -13,6 +14,7 @@ module.exports = function(config) {
     ],
 
     preprocessors: {
+      'example/*.js': ['browserify'],
       'src/*.js': ['browserify'],
       'test/*.js': ['browserify']
     },
