@@ -3,8 +3,8 @@ ES6 Dependency Injection container
 
 # Languages
 
- *[English](#en)
- *[Русский](#ru)
+ * [English](#en)
+ * [Русский](#ru)
 
 <a name="en"></a> # Dependency Annotation
 
