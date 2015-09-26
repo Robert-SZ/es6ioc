@@ -3,10 +3,10 @@ ES6 Dependency Injection container
 
 # Languages
 
- [English][1]
- [Русский][2]
+ [English](#en)
+ [Русский](#ru)
 
-[1]: # Dependency Annotation
+[<a name="en"></a> # Dependency Annotation
 
 Similar to AngularJs 1.x you must to annotate your ES6 classes with $inject property that container knows what types to
 inject into constructor.
@@ -35,4 +35,4 @@ ioc.registerType('logger', Logger);
 
 # Resolve
 
-[2]: # Опеределение зависимостей
+<a name="ru"></a> # Опеределение зависимостей
