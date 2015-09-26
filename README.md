@@ -3,10 +3,10 @@ ES6 Dependency Injection container
 
 # Languages
 
- [English](#en)
- [Русский](#ru)
+ *[English](#en)
+ *[Русский](#ru)
 
-[<a name="en"></a> # Dependency Annotation
+<a name="en"></a> # Dependency Annotation
 
 Similar to AngularJs 1.x you must to annotate your ES6 classes with $inject property that container knows what types to
 inject into constructor.
