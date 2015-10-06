@@ -6,7 +6,8 @@ import {Provider} from './provider.js';
 import {Logger} from './logger.js';
 import {Logic} from './logic.js';
 
-ioc.registerType('connectionString', 'http://api.com');
-ioc.registerType('provider', Provider);
-ioc.registerType('logger', Logger);
 ioc.registerType('logic', Logic);
+ioc.registerType('connectionString', 'http://api.com');
+ioc.registerType('logger', Logger);
+ioc.registerType('provider', Provider);
+ioc.testConfig();

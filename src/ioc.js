@@ -3,11 +3,43 @@
  */
 'use strict';
 
-let map = new Map();
+let _map = new Map();
+let _mapInjects = new Map();
 
 function registerType(type, resolve) {
-    map.set(type, resolve);
+    let object = _map.get(type);
+    if (object)
+        throw new TypeError('Type already registred: ' + type);
+    _map.set(type, resolve);
+    if (resolve.$inject) {
+        _mapInjects.set(type, resolve.$inject);
+    }
+    findCircularDependencies(type, []);
 }
+
+function testConfig() {
+    _mapInjects.forEach((value, key)=> {
+        value.forEach(val=> {
+            let object = _map.get(val);
+            if (!object)
+                throw new ReferenceError('Dependency injected but not registred: ' + val);
+        });
+    })
+}
+
+function findCircularDependencies(type, depsArray) {
+    if (depsArray.indexOf(type) > -1)
+        throw  new TypeError('CircularDependencies in ' + depsArray.concat(type).join('->'));
+    let inject = _mapInjects.get(type);
+    if (inject) {
+        depsArray.push(type);
+        inject.forEach(dep=> {
+            depsArray.concat(findCircularDependencies(dep, depsArray));
+        });
+    }
+    return depsArray;
+}
+
 
 function getInject(object) {
     let inject;
@@ -24,7 +56,9 @@ function getInject(object) {
 }
 
 function resolve(type) {
-    let object = map.get(type);
+    let object = _map.get(type);
+    if (!object)
+        throw new TypeError('Type not registred: ' + type);
     let injectProperty = getInject(object);
     if (injectProperty) {
         let objectDeps = injectProperty.map((dep)=> {
@@ -57,6 +91,8 @@ function resolve(type) {
 
 export default {
     registerType: registerType,
-    resolve: resolve
+    resolve: resolve,
+    testConfig: testConfig
+
 }
 

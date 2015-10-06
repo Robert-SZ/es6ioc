@@ -8,4 +8,6 @@ class Logger{
     }
 }
 
+Logger.$inject = [];
+
 export default {Logger};
