@@ -48,7 +48,7 @@ ioc.registerType('provider', Provider);
 To instatiate concrete object and it's dependencies you have to use 'resolve' method.
 
 ```
-ioc.resolve('logic');
+let logic = ioc.resolve('logic');
 ```
 Note that object do not instantiated directly, rather you just say: "Hey, ioc give me the 'logic'". And container
 first construct object dependencies and then passes them to required object constructor.
@@ -91,7 +91,7 @@ ioc.registerType('logger', Logger);
 
 Для создания конкретного объекта необходимо вызвать метод resolve
 ```
-ioc.resolve('logic');
+let logic = ioc.resolve('logic');
 ```
-Обратите внимание, что явного создания зависимойстей не происходит. Вы просто говорите контейнеру: "Создай мне зависимость logic".
+Обратите внимание, что явного создания зависимостей не происходит. Вы просто говорите контейнеру: "Создай мне зависимость logic".
 При этом сначала будут созданы все зависимости, а затем сам запрашиваемый объект.
