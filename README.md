@@ -10,7 +10,6 @@ ES6 Dependency Injection container
 
 Similar to AngularJs 1.x you must to annotate your ES6 classes with $inject property that container knows what types to
 inject into constructor.
-
 ```
 class Provider {
     constructor(connectionString, logger) {
@@ -30,9 +29,47 @@ that requires by concrete injection. To map types container uses string aliases.
 
 Example:
 ```
+ioc.registerType('connectionString', 'http://api.com');
 ioc.registerType('logger', Logger);
+ioc.registerType('provider', Provider);
 ```
 
 ## Resolve
 
-# <a name="ru"></a>Опеределение зависимостей
+To instatiate concrete object and it's dependencies you have to use 'resolve' method.
+
+Example:
+
+ let logic  = ioc.resolve('logic');
+
+Note
+
+# <a name="ru"></a>Цели
+  1) Реализация принципов DI
+  2) Повышение тестируемости кода
+  3) Возможность конфигурирования приложения
+
+## Опеределение зависимостей
+
+Также как в AngularJs 1.x вам нужно определить статическое свойство $inject.
+Это позволить IoC контейнеру определить какие зависимости требует ваш класс.
+```
+class Provider {
+    constructor(connectionString, logger) {
+        this.connectionString = connectionString;
+        this.logger = logger;
+    }
+    getData() {
+    }
+}
+Provider.$inject = ['connectionString', 'logger'];
+```
+
+## Регистрация зависимостей
+
+Первым делом необходиму указать контейнеру соотвествие имени зависимости и класса реализации.
+
+Пример:
+```
+ioc.registerType('logger', Logger);
+```
