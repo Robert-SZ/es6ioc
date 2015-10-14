@@ -45,7 +45,7 @@ class Ioc {
             throw new TypeError('Type not registered: ' + type);
 
         const typeOfResolve = typeof(registeredType);
-        let injectProperty = (this._getInject(registeredType) || []).map(this.resolve.bind(this));
+        let injectProperty = (this._getInject(registeredType) || []).map((t)=>this.resolve(t));
         return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
     }
 
