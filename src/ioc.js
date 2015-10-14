@@ -33,19 +33,24 @@ class Ioc {
         this._map = new Map();
     }
 
-    registerType(type, resolve) {
-        if (!type) {
+    registerType(key, value) {
+        if(value===null || value===undefined){
+            throw new ReferenceError('Value must be defined')
+        }
+        if (!key) {
             throw new TypeError('Argument `type` is undefined');
         }
 
-        _assertIsDefined(resolve, 'Argument `resolve` is undefined');
+        _assertIsDefined(value, 'Argument `resolve` is undefined');
 
-        let registeredType = this._map.get(type);
-        if (registeredType)
-            throw new TypeError('Type already registered: ' + type);
+        let registeredType = this._map.get(key);
+        if (registeredType) {
+            if (registeredType !== value)
+                throw new TypeError('Type already registered: ' + key);
+        }
 
-        this._map.set(type, resolve);
-        this._findCircularDependencies(type);
+        this._map.set(key, value);
+        this._findCircularDependencies(key);
     }
 
     resolve(type) {
