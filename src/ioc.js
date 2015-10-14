@@ -14,8 +14,7 @@ const resolver = {
     },
     'function': function (ctor, deps) {
         let instance = Object.create(ctor.prototype);
-        ctor.apply(instance, deps);
-        return instance;
+        return ctor.apply(instance, deps) || instance;
     },
     '*'(){
         throw new TypeError('Resolving undefined type');
