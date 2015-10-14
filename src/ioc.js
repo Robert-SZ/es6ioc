@@ -10,9 +10,6 @@ const resolver = {
         return obj;
     },
     object(obj){
-        if (obj == null) {
-            throw new TypeError(type);
-        }
         return obj;
     },
     'function': function (ctor, deps) {
@@ -21,9 +18,15 @@ const resolver = {
         return instance;
     },
     '*'(){
-        throw new TypeError(type)
+        throw new TypeError('Resolving undefined type');
     }
 };
+
+function _assertIsDefined(obj, message) {
+    if (obj === undefined) {
+        throw new TypeError(message);
+    }
+}
 
 class Ioc {
     constructor() {
@@ -31,6 +34,12 @@ class Ioc {
     }
 
     registerType(type, resolve) {
+        if (!type) {
+            throw new TypeError('Argument `type` is undefined');
+        }
+
+        _assertIsDefined(resolve, 'Argument `resolve` is undefined');
+
         let registeredType = this._map.get(type);
         if (registeredType)
             throw new TypeError('Type already registered: ' + type);
@@ -41,24 +50,23 @@ class Ioc {
 
     resolve(type) {
         let registeredType = this._map.get(type);
-        if (!registeredType)
-            throw new TypeError('Type not registered: ' + type);
+        _assertIsDefined(registeredType, `Type not registered: ${type}`);
 
         const typeOfResolve = typeof(registeredType);
-        let injectProperty = (this._getInject(registeredType) || []).map((t)=>this.resolve(t));
+        let injectProperty = (this._getInject(registeredType) || []).map((t)=> {
+            return this.resolve(t)
+        });
         return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
     }
 
     testConfig() {
-        this._map.forEach((resolve)=> {
+        this._map.forEach((resolve, registeredType)=> {
             (resolve.$inject || []).forEach(type=> {
-                if (!this._map.get(type))
-                    throw new ReferenceError('Dependency injected but not registred: ' + val);
+                _assertIsDefined(this._map.get(type), `Dependency '${type}' injected to '${registeredType}' but not registred`);
             });
         });
         return true;
     }
-
 
     _findCircularDependencies(type) {
         let path = [type];
@@ -69,7 +77,7 @@ class Ioc {
             while (inject.length) {
                 dep = inject.shift();
                 if (path.indexOf(dep) > -1) {
-                    throw new TypeError('CircularDependencies in ' + path.concat(dep).join('->'));
+                    throw new TypeError(`CircularDependencies in ${path.concat(dep).join('->')}`);
                 }
                 path.push(dep);
                 loopInjects(dep);

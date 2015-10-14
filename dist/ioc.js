@@ -28,9 +28,6 @@
             return obj;
         },
         object: function object(obj) {
-            if (obj == null) {
-                throw new TypeError(type);
-            }
             return obj;
         },
         'function': function _function(ctor, deps) {
@@ -39,9 +36,15 @@
             return instance;
         },
         '*': function _() {
-            throw new TypeError(type);
+            throw new TypeError('Resolving undefined type');
         }
     };
+
+    function _assertIsDefined(obj, message) {
+        if (obj === undefined) {
+            throw new TypeError(message);
+        }
+    }
 
     var Ioc = (function () {
         function Ioc() {
@@ -53,6 +56,12 @@
         _createClass(Ioc, [{
             key: 'registerType',
             value: function registerType(type, resolve) {
+                if (!type) {
+                    throw new TypeError('Argument `type` is undefined');
+                }
+
+                _assertIsDefined(resolve, 'Argument `resolve` is undefined');
+
                 var registeredType = this._map.get(type);
                 if (registeredType) throw new TypeError('Type already registered: ' + type);
 
@@ -65,7 +74,7 @@
                 var _this = this;
 
                 var registeredType = this._map.get(type);
-                if (!registeredType) throw new TypeError('Type not registered: ' + type);
+                _assertIsDefined(registeredType, 'Type not registered: ' + type);
 
                 var typeOfResolve = typeof registeredType;
                 var injectProperty = (this._getInject(registeredType) || []).map(function (t) {
@@ -78,9 +87,9 @@
             value: function testConfig() {
                 var _this2 = this;
 
-                this._map.forEach(function (resolve) {
+                this._map.forEach(function (resolve, registeredType) {
                     (resolve.$inject || []).forEach(function (type) {
-                        if (!_this2._map.get(type)) throw new ReferenceError('Dependency injected but not registred: ' + val);
+                        _assertIsDefined(_this2._map.get(type), 'Dependency \'' + type + '\' injected to \'' + registeredType + '\' but not registred');
                     });
                 });
                 return true;
