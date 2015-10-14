@@ -63,7 +63,7 @@ class Ioc {
     _findCircularDependencies(type) {
         let path = [type];
 
-        let loopInjects = (type) => {
+        var loopInjects = (type) => {
             let inject = ((this._map.get(type) || {}).$inject || []).slice(0);
             let dep;
             while (inject.length) {
