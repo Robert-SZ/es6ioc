@@ -32,8 +32,7 @@
         },
         'function': function _function(ctor, deps) {
             var instance = Object.create(ctor.prototype);
-            ctor.apply(instance, deps);
-            return instance;
+            return ctor.apply(instance, deps) || instance;
         },
         '*': function _() {
             throw new TypeError('Resolving undefined type');
