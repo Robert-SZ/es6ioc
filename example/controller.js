@@ -1,17 +1,16 @@
 /**
  * Created by RobertSabiryanov on 11.09.15.
  */
-import iocconfig from './ioc.config.js';
-import ioc from '../src/ioc.js';
-
 class Controller {
-    constructor() {
-        this.logic  = ioc.resolve('logic');
+    constructor(logic) {
+        this.logic  = logic;
     }
 
     get() {
         return this.logic.getReversedData();
     }
 }
+
+Controller.$inject = ['logic']
 
 export default {Controller};
