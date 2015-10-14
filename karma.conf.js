@@ -16,13 +16,13 @@ module.exports = function(config) {
     preprocessors: {
       'example/*.js': ['browserify'],
       'src/*.js': ['browserify'],
-      'test/*.js': ['browserify']
+      'test/*.spec.js': ['browserify']
     },
 
     browserify: {
       debug: true,
       transform: [ 'babelify' ],
-      entries: './tests/index.js'
+      entries: './tests/index.spec.js'
     }
 
     // define reporters, port, logLevel, browsers etc.

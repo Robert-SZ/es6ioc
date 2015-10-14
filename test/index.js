@@ -129,15 +129,11 @@ describe('IoC', () => {
 
         TypeC.$inject = ['TypeD'];
 
-        function TypeD() {
-        }
-
-
         let ioc = new IoC();
         ioc.registerType('TypeC', TypeC);
         ioc.registerType('TypeB', TypeB);
         ioc.registerType('TypeA', TypeA);
-        ioc.registerType('TypeD', TypeD);
+        ioc.registerType('TypeD', 'simple string');
 
         should.doesNotThrow(()=>ioc.resolve('TypeA'),'not resolved');
     });

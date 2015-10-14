@@ -89,6 +89,7 @@ class Ioc {
             return resolve.$inject;
         }
 
+        //TODO непонятно зачем (
         for (let prop in resolve) {
             if (typeof (resolve[prop]) == 'function') {
                 inject = this.getInject(resolve[prop]);

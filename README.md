@@ -6,7 +6,13 @@ ES6 Dependency Injection container
  * [English](#en)
  * [Русский](#ru)
 
-# <a name="en"></a>Dependency Annotation
+# <a name="en"></a>Motivation
+
+1. Implement DI principles
+2. Testability
+3. Customization by configuration file
+
+##Dependency Annotation
 
 Similar to AngularJs 1.x you must to annotate your ES6 classes with $inject property that container knows what types to
 inject into constructor.
@@ -29,6 +35,9 @@ that requires by concrete injection. To map types container uses string aliases.
 
 Example:
 ```
+import IoC from ‘ioc.js’
+
+const ioc = new IoC();
 ioc.registerType('connectionString', 'http://api.com');
 ioc.registerType('logger', Logger);
 ioc.registerType('provider', Provider);
@@ -38,11 +47,11 @@ ioc.registerType('provider', Provider);
 
 To instatiate concrete object and it's dependencies you have to use 'resolve' method.
 
-Example:
-
- let logic  = ioc.resolve('logic');
-
-Note
+```
+let logic = ioc.resolve('logic');
+```
+Note that object do not instantiated directly, rather you just say: "Hey, ioc give me the 'logic'". And container
+first construct object dependencies and then passes them to required object constructor.
 
 # <a name="ru"></a>Цели
   1. Реализация принципов DI
@@ -71,5 +80,18 @@ Provider.$inject = ['connectionString', 'logger'];
 
 Пример:
 ```
+import IoC from ‘ioc.js’
+
+const ioc = new IoC();
+
 ioc.registerType('logger', Logger);
 ```
+
+## Создание экземпляров объектов
+
+Для создания конкретного объекта необходимо вызвать метод resolve
+```
+let logic = ioc.resolve('logic');
+```
+Обратите внимание, что явного создания зависимостей не происходит. Вы просто говорите контейнеру: "Создай мне зависимость logic".
+При этом сначала будут созданы все зависимости, а затем сам запрашиваемый объект.
