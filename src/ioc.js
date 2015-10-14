@@ -89,10 +89,16 @@ function resolve(type) {
     }
 }
 
+function clear(){
+     _map = new Map();
+     _mapInjects = new Map();
+}
+
 export default {
     registerType: registerType,
     resolve: resolve,
-    testConfig: testConfig
+    testConfig: testConfig,
+    clear:clear
 
 }
 
