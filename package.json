@@ -7,7 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel/register --reporter spec"
+    "test": "mocha --compilers js:babel/register --reporter spec",
+    "build":"babel src --out-dir dist --modules=umd"
   },
   "author": "",
   "license": "ISC",
