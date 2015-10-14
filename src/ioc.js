@@ -1,27 +1,29 @@
 'use strict';
 const resolver = {
-    number(ioc, obj){
+    number(obj){
         return obj;
     },
-    string(ioc, obj){
+    string(obj){
         return obj;
     },
-    boolean(ioc, obj){
+    boolean(obj){
         return obj;
     },
-    object(ioc, obj){
+    object(obj){
         if (obj == null) {
             throw new TypeError(type);
         }
         return obj;
     },
-    'function': function (ioc, ctor, deps) {
-        return ioc._createInstanceOfType(ctor, deps);
+    'function': function (ctor, deps) {
+        let instance = Object.create(ctor.prototype);
+        ctor.apply(instance, deps);
+        return instance;
     },
     '*'(){
         throw new TypeError(type)
     }
-}
+};
 
 class Ioc {
     constructor() {
@@ -29,22 +31,22 @@ class Ioc {
     }
 
     registerType(type, resolve) {
-        let object = this._map.get(type);
-        if (object)
-            throw new TypeError('Type already registred: ' + type);
+        let registeredType = this._map.get(type);
+        if (registeredType)
+            throw new TypeError('Type already registered: ' + type);
 
         this._map.set(type, resolve);
         this._findCircularDependencies(type);
     }
 
     resolve(type) {
-        let resolve = this._map.get(type);
-        if (!resolve)
-            throw new TypeError('Type not registred: ' + type);
+        let registeredType = this._map.get(type);
+        if (!registeredType)
+            throw new TypeError('Type not registered: ' + type);
 
-        const typeOfResolve = typeof(resolve);
-        let injectProperty = (this._getInject(resolve) || []).map(this.resolve.bind(this));
-        return (resolver[typeOfResolve] || resolver['*'])(this, resolve, injectProperty);
+        const typeOfResolve = typeof(registeredType);
+        let injectProperty = (this._getInject(registeredType) || []).map(this.resolve.bind(this));
+        return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
     }
 
     testConfig() {
@@ -57,11 +59,6 @@ class Ioc {
         return true;
     }
 
-    _createInstanceOfType(ctor, deps) {
-        let instance = Object.create(ctor.prototype);
-        ctor.apply(instance, deps);
-        return instance;
-    }
 
     _findCircularDependencies(type) {
         let path = [type];
@@ -78,26 +75,15 @@ class Ioc {
                 loopInjects(dep);
                 path.pop();
             }
-        }
+        };
 
         loopInjects(type);
     }
 
-    _getInject(resolve) {
-        let inject;
-        if (resolve.$inject) {
-            return resolve.$inject;
+    _getInject(registeredType) {
+        if (registeredType.$inject) {
+            return registeredType.$inject;
         }
-
-        //TODO непонятно зачем (
-        for (let prop in resolve) {
-            if (typeof (resolve[prop]) == 'function') {
-                inject = this.getInject(resolve[prop]);
-                if (inject)
-                    return inject;
-            }
-        }
-        return inject;
     }
 }
 
