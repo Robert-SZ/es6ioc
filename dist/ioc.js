@@ -40,7 +40,6 @@
     };
 
     function _assertIsDefined(obj, message) {
-        //todo can i inject null?
         if (obj === undefined) {
             throw new TypeError(message);
         }
@@ -65,25 +64,34 @@
 
                 var registeredType = this._map.get(key);
                 if (registeredType) {
-                    if (registeredType !== value) throw new TypeError('Type already registered: ' + key);
+                    if (registeredType !== value) {
+                        throw new TypeError('Type already registered: ' + key);
+                    }
                 }
 
                 this._map.set(key, value);
                 this._findCircularDependencies(key);
+                return this;
             }
         }, {
             key: 'resolve',
             value: function resolve(type) {
                 var _this = this;
 
-                var registeredType = this._map.get(type);
-                _assertIsDefined(registeredType, 'Type not registered: ' + type);
+                try {
+                    var registeredType = this._map.get(type);
+                    _assertIsDefined(registeredType, 'Type not registered:');
 
-                var typeOfResolve = typeof registeredType;
-                var injectProperty = (this._getInject(registeredType) || []).map(function (t) {
-                    return _this.resolve(t);
-                });
-                return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
+                    var typeOfResolve = typeof registeredType;
+                    var injectProperty = (this._getInject(registeredType) || []).map(function (t) {
+                        return _this.resolve(t);
+                    });
+                    return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
+                } catch (error) {
+                    var message = error.message + ' -> ' + type;
+                    message = message.replace('Type not registered: ->', 'Type not registered:');
+                    throw new TypeError(message);
+                }
             }
         }, {
             key: 'testConfig',
