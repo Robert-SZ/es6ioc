@@ -185,22 +185,22 @@ describe('IoC', () => {
 
     it('same aliases for same dates', ()=> {
         let ioc = new IoC();
-        var date=new Date();
+        var date = new Date();
         ioc.registerType('first', date);
 
         should.doesNotThrow(()=>ioc.registerType('first', date), 'Type already registered: first');
     });
     it('same aliases for different dates', ()=> {
         let ioc = new IoC();
-        var date1= Date.parse('01/01/2015');
-        var date2= Date.parse('01/02/2015');
+        var date1 = Date.parse('01/01/2015');
+        var date2 = Date.parse('01/02/2015');
         ioc.registerType('first', date1);
 
         should.throws(()=>ioc.registerType('first', date2), 'Type already registered: first');
     });
     it('same aliases for same object', ()=> {
         let ioc = new IoC();
-        var obj={
+        var obj = {
             name: 'John'
         };
         ioc.registerType('first', obj);
@@ -209,10 +209,10 @@ describe('IoC', () => {
     });
     it('same aliases for different objects', ()=> {
         let ioc = new IoC();
-        var obj={
+        var obj = {
             name: 'John'
         };
-        var obj2={
+        var obj2 = {
             name: 'John'
         };
         ioc.registerType('first', obj);
@@ -221,37 +221,69 @@ describe('IoC', () => {
     });
     it('same aliases for same functions', ()=> {
         let ioc = new IoC();
-        function A(){
+
+        function A() {
 
         }
+
         ioc.registerType('first', A);
 
         should.doesNotThrow(()=>ioc.registerType('first', A), 'Type already registered: first');
     });
     it('same aliases for different functions', ()=> {
         let ioc = new IoC();
-        function A(){
+
+        function A() {
 
         }
-        function B(){
+
+        function B() {
 
         }
+
         ioc.registerType('first', A);
 
         should.throws(()=>ioc.registerType('first', B), 'Type already registered: first');
     });
     it('register chain', ()=> {
         let ioc = new IoC();
-        function A(){
 
-        }
-        A.$inject=['B'];
-        function B(){
+        function A() {
 
         }
 
-        ioc.registerType('A', A).registerType('B',B);
+        A.$inject = ['B'];
+        function B() {
+
+        }
+
+        ioc.registerType('A', A).registerType('B', B);
 
         should.doesNotThrow(()=>ioc.resolve('A'), 'not resolved');
+    });
+    it('exceptions chain', ()=> {
+        let ioc = new IoC();
+
+        function A() {
+
+        }
+
+        A.$inject = ['B'];
+        function B() {
+
+        }
+
+        B.$inject = ['C'];
+        function C() {
+
+        }
+
+        C.$inject = ['D'];
+
+        ioc.registerType('A', A)
+            .registerType('B', B)
+            .registerType('C', C);
+
+        should.throws(()=>ioc.resolve('A'), 'Type not registered: D -> A -> B -> C');
     });
 });

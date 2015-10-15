@@ -22,11 +22,11 @@ const resolver = {
 };
 
 function _assertIsDefined(obj, message) {
-    //todo can i inject null?
     if (obj === undefined) {
         throw new TypeError(message);
     }
 }
+
 
 class Ioc {
     constructor() {
@@ -43,8 +43,9 @@ class Ioc {
 
         let registeredType = this._map.get(key);
         if (registeredType) {
-            if (registeredType !== value)
+            if (registeredType !== value) {
                 throw new TypeError('Type already registered: ' + key);
+            }
         }
 
         this._map.set(key, value);
@@ -53,14 +54,21 @@ class Ioc {
     }
 
     resolve(type) {
-        let registeredType = this._map.get(type);
-        _assertIsDefined(registeredType, `Type not registered: ${type}`);
+        try {
+            let registeredType = this._map.get(type);
+            _assertIsDefined(registeredType, `Type not registered:`);
 
-        const typeOfResolve = typeof(registeredType);
-        let injectProperty = (this._getInject(registeredType) || []).map((t)=> {
-            return this.resolve(t)
-        });
-        return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
+            const typeOfResolve = typeof(registeredType);
+            let injectProperty = (this._getInject(registeredType) || []).map((t)=> {
+                return this.resolve(t)
+            });
+            return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
+        }
+        catch (error) {
+            var message = error.message + ' -> ' + type;
+            message = message.replace('Type not registered: ->', 'Type not registered:');
+            throw new TypeError(message);
+        }
     }
 
     testConfig() {
