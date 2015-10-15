@@ -22,6 +22,7 @@ const resolver = {
 };
 
 function _assertIsDefined(obj, message) {
+    //todo can i inject null?
     if (obj === undefined) {
         throw new TypeError(message);
     }
@@ -33,9 +34,7 @@ class Ioc {
     }
 
     registerType(key, value) {
-        if(value===null || value===undefined){
-            throw new ReferenceError('Value must be defined')
-        }
+
         if (!key) {
             throw new TypeError('Argument `type` is undefined');
         }
