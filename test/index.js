@@ -137,11 +137,7 @@ describe('IoC', () => {
 
         should.doesNotThrow(()=>ioc.resolve('TypeA'), 'not resolved');
     });
-    it('value must be defined', ()=> {
-        let ioc = new IoC();
 
-        should.throws(()=>ioc.registerType('first', null), 'Value must be defined');
-    });
     it('same aliases for same string', ()=> {
         let ioc = new IoC();
         ioc.registerType('first', 'a');
@@ -243,5 +239,19 @@ describe('IoC', () => {
         ioc.registerType('first', A);
 
         should.throws(()=>ioc.registerType('first', B), 'Type already registered: first');
+    });
+    it('register chain', ()=> {
+        let ioc = new IoC();
+        function A(){
+
+        }
+        A.$inject=['B'];
+        function B(){
+
+        }
+
+        ioc.registerType('A', A).registerType('B',B);
+
+        should.doesNotThrow(()=>ioc.resolve('A'), 'not resolved');
     });
 });

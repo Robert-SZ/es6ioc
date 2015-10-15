@@ -49,6 +49,7 @@ class Ioc {
 
         this._map.set(key, value);
         this._findCircularDependencies(key);
+        return this;
     }
 
     resolve(type) {
