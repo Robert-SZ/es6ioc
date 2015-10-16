@@ -45,7 +45,7 @@
         }
     }
 
-    function getError(error) {
+    function getError(error, type) {
         var message = typeof error == "string" ? error : error.message + ' -> ' + type;
         var stack = error.stack ? error.stack : null;
         message = message.replace('Type not registered: ->', 'Type not registered:');
@@ -97,7 +97,7 @@
                     });
                     return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
                 } catch (error) {
-                    throw getError(error);
+                    throw getError(error, type);
                 }
             }
         }, {
