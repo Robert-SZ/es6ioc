@@ -69,7 +69,7 @@
                     throw new TypeError('Argument key \'' + key + '\' is undefined');
                 }
 
-                _assertIsDefined(value, 'Argument value `value` is undefined');
+                _assertIsDefined(value, 'Argument value of \'' + key + '\' is undefined');
 
                 var registeredType = this._map.get(key);
                 if (registeredType) {
