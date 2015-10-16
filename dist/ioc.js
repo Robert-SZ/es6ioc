@@ -45,6 +45,15 @@
         }
     }
 
+    function getError(error) {
+        var message = typeof error == "string" ? error : error.message + ' -> ' + type;
+        var stack = error.stack ? error.stack : null;
+        message = message.replace('Type not registered: ->', 'Type not registered:');
+        var newError = new TypeError(message);
+        newError.stack = stack;
+        throw newError;
+    }
+
     var Ioc = (function () {
         function Ioc() {
             _classCallCheck(this, Ioc);
@@ -57,10 +66,10 @@
             value: function registerType(key, value) {
 
                 if (!key) {
-                    throw new TypeError('Argument `type` is undefined');
+                    throw new TypeError('Argument key \'' + key + '\' is undefined');
                 }
 
-                _assertIsDefined(value, 'Argument `resolve` is undefined');
+                _assertIsDefined(value, 'Argument value `value` is undefined');
 
                 var registeredType = this._map.get(key);
                 if (registeredType) {
@@ -88,9 +97,7 @@
                     });
                     return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
                 } catch (error) {
-                    var message = error.message + ' -> ' + type;
-                    message = message.replace('Type not registered: ->', 'Type not registered:');
-                    throw new TypeError(message);
+                    throw getError(error);
                 }
             }
         }, {

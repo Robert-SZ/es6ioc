@@ -27,6 +27,14 @@ function _assertIsDefined(obj, message) {
     }
 }
 
+function getError(error, type) {
+    let message = typeof error == "string" ? error : error.message + ' -> ' + type;
+    let stack = error.stack ? error.stack : null;
+    message = message.replace('Type not registered: ->', 'Type not registered:');
+    let newError = new TypeError(message);
+    newError.stack = stack;
+    throw newError;
+}
 
 class Ioc {
     constructor() {
@@ -36,10 +44,10 @@ class Ioc {
     registerType(key, value) {
 
         if (!key) {
-            throw new TypeError('Argument `type` is undefined');
+            throw new TypeError(`Argument key '${key}' is undefined`);
         }
 
-        _assertIsDefined(value, 'Argument `resolve` is undefined');
+        _assertIsDefined(value, 'Argument value `value` is undefined');
 
         let registeredType = this._map.get(key);
         if (registeredType) {
@@ -65,9 +73,7 @@ class Ioc {
             return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
         }
         catch (error) {
-            var message = error.message + ' -> ' + type;
-            message = message.replace('Type not registered: ->', 'Type not registered:');
-            throw new TypeError(message);
+            throw getError(error, type);
         }
     }
 
