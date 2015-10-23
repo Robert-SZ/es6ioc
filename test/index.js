@@ -286,4 +286,40 @@ describe('IoC', () => {
 
         should.throws(()=>ioc.resolve('A'), 'Type not registered: D -> A -> B -> C');
     });
+    it('should pass testConfig', ()=> {
+        let ioc = new IoC();
+
+        function A() {
+        }
+
+        A.$inject = ['B'];
+        function B() {
+        }
+
+        B.$inject = ['C'];
+        function C() {
+        }
+
+        ioc.registerType('A', A)
+            .registerType('B', B)
+            .registerType('C', C);
+        should(ioc.testConfig()).ok;
+    });
+    it('should throw testConfig', ()=> {
+        let ioc = new IoC();
+
+        function A() {
+        }
+
+        A.$inject = ['B'];
+        function B() {
+        }
+
+        B.$inject = ['C'];
+
+
+        ioc.registerType('A', A)
+            .registerType('B', B);
+        should.throws(()=>ioc.testConfig(), ' Dependency "C" injected to "B" but not registered');
+    });
 });

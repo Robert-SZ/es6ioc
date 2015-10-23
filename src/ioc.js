@@ -38,7 +38,14 @@ function getError(error, type) {
 
 class Ioc {
     constructor() {
-        this._map = new Map();
+        this._map = {
+            get: (key)=> {
+                return this._map[key];
+            },
+            set: (key, value)=> {
+                this._map[key] = value;
+            }
+        };
     }
 
     registerType(key, value) {
@@ -78,11 +85,11 @@ class Ioc {
     }
 
     testConfig() {
-        this._map.forEach((resolve, registeredType)=> {
-            (resolve.$inject || []).forEach(type=> {
-                _assertIsDefined(this._map.get(type), `Dependency '${type}' injected to '${registeredType}' but not registred`);
+        for (let key in this._map) {
+            (this._map.get(key).$inject || []).forEach(type=> {
+                _assertIsDefined(this._map.get(type), `Dependency '${type}' injected to '${key}' but not registered`);
             });
-        });
+        }
         return true;
     }
 

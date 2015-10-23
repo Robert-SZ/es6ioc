@@ -13,9 +13,29 @@
 })(this, function (exports, module) {
     'use strict';
 
-    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+    var _createClass = (function () {
+        function defineProperties(target, props) {
+            for (var i = 0; i < props.length; i++) {
+                var descriptor = props[i];
+                descriptor.enumerable = descriptor.enumerable || false;
+                descriptor.configurable = true;
+                if ('value' in descriptor) descriptor.writable = true;
+                Object.defineProperty(target, descriptor.key, descriptor);
+            }
+        }
 
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+        return function (Constructor, protoProps, staticProps) {
+            if (protoProps) defineProperties(Constructor.prototype, protoProps);
+            if (staticProps) defineProperties(Constructor, staticProps);
+            return Constructor;
+        };
+    })();
+
+    function _classCallCheck(instance, Constructor) {
+        if (!(instance instanceof Constructor)) {
+            throw new TypeError('Cannot call a class as a function');
+        }
+    }
 
     var resolver = {
         number: function number(obj) {
@@ -58,7 +78,14 @@
         function Ioc() {
             _classCallCheck(this, Ioc);
 
-            this._map = new Map();
+            this._map = {
+                get: (key)=> {
+                    return this._map[key];
+                },
+                set: (key, value)=> {
+                    this._map[key] = value;
+                }
+            };
         }
 
         _createClass(Ioc, [{
@@ -105,11 +132,12 @@
             value: function testConfig() {
                 var _this2 = this;
 
-                this._map.forEach(function (resolve, registeredType) {
-                    (resolve.$inject || []).forEach(function (type) {
-                        _assertIsDefined(_this2._map.get(type), 'Dependency \'' + type + '\' injected to \'' + registeredType + '\' but not registred');
-                    });
-                });
+                for(var key in _this2._map){
+                    (_this2._map[key].$inject || []).forEach(function (type) {
+                        _assertIsDefined(_this2._map.get(type), 'Dependency \'' + type + '\' injected to \'' + key + '\' but not registred');
+                    })
+                }
+
                 return true;
             }
         }, {
