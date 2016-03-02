@@ -36,7 +36,7 @@ function getError(error, type) {
     throw newError;
 }
 
-class Ioc {
+export default class Ioc {
     constructor() {
         this._map = {
             get: (key)=> {
@@ -119,6 +119,4 @@ class Ioc {
         }
     }
 }
-
-export default Ioc;
 

@@ -1,8 +1,8 @@
 {
   "name": "es6ioc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/ioc.js",
   "directories": {
     "test": "tests"
   },

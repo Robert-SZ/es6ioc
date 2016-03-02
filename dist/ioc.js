@@ -13,29 +13,9 @@
 })(this, function (exports, module) {
     'use strict';
 
-    var _createClass = (function () {
-        function defineProperties(target, props) {
-            for (var i = 0; i < props.length; i++) {
-                var descriptor = props[i];
-                descriptor.enumerable = descriptor.enumerable || false;
-                descriptor.configurable = true;
-                if ('value' in descriptor) descriptor.writable = true;
-                Object.defineProperty(target, descriptor.key, descriptor);
-            }
-        }
+    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-        return function (Constructor, protoProps, staticProps) {
-            if (protoProps) defineProperties(Constructor.prototype, protoProps);
-            if (staticProps) defineProperties(Constructor, staticProps);
-            return Constructor;
-        };
-    })();
-
-    function _classCallCheck(instance, Constructor) {
-        if (!(instance instanceof Constructor)) {
-            throw new TypeError('Cannot call a class as a function');
-        }
-    }
+    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
     var resolver = {
         number: function number(obj) {
@@ -76,14 +56,16 @@
 
     var Ioc = (function () {
         function Ioc() {
+            var _this = this;
+
             _classCallCheck(this, Ioc);
 
             this._map = {
-                get: (key)=> {
-                    return this._map[key];
+                get: function get(key) {
+                    return _this._map[key];
                 },
-                set: (key, value)=> {
-                    this._map[key] = value;
+                set: function set(key, value) {
+                    _this._map[key] = value;
                 }
             };
         }
@@ -112,7 +94,7 @@
         }, {
             key: 'resolve',
             value: function resolve(type) {
-                var _this = this;
+                var _this2 = this;
 
                 try {
                     var registeredType = this._map.get(type);
@@ -120,7 +102,7 @@
 
                     var typeOfResolve = typeof registeredType;
                     var injectProperty = (this._getInject(registeredType) || []).map(function (t) {
-                        return _this.resolve(t);
+                        return _this2.resolve(t);
                     });
                     return (resolver[typeOfResolve] || resolver['*'])(registeredType, injectProperty);
                 } catch (error) {
@@ -130,25 +112,28 @@
         }, {
             key: 'testConfig',
             value: function testConfig() {
-                var _this2 = this;
+                var _this3 = this;
 
-                for(var key in _this2._map){
-                    (_this2._map[key].$inject || []).forEach(function (type) {
-                        _assertIsDefined(_this2._map.get(type), 'Dependency \'' + type + '\' injected to \'' + key + '\' but not registred');
-                    })
+                var _loop = function (key) {
+                    (_this3._map.get(key).$inject || []).forEach(function (type) {
+                        _assertIsDefined(_this3._map.get(type), 'Dependency \'' + type + '\' injected to \'' + key + '\' but not registered');
+                    });
+                };
+
+                for (var key in this._map) {
+                    _loop(key);
                 }
-
                 return true;
             }
         }, {
             key: '_findCircularDependencies',
             value: function _findCircularDependencies(type) {
-                var _this3 = this;
+                var _this4 = this;
 
                 var path = [type];
 
                 var loopInjects = function loopInjects(type) {
-                    var inject = ((_this3._map.get(type) || {}).$inject || []).slice(0);
+                    var inject = ((_this4._map.get(type) || {}).$inject || []).slice(0);
                     var dep = undefined;
                     while (inject.length) {
                         dep = inject.shift();
