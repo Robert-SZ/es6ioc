@@ -70,8 +70,8 @@ export default class Ioc {
 
     resolve(type) {
         try {
-            let registeredType = this._map.get(type);
-            _assertIsDefined(registeredType, `Type not registered:`);
+            let registeredType = typeof type === 'string' ? this._map.get(type) : type;
+            _assertIsDefined(registeredType, `Type ${type} not registered:`);
 
             const typeOfResolve = typeof(registeredType);
             let injectProperty = (this._getInject(registeredType) || []).map((t)=> {

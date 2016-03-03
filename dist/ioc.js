@@ -97,8 +97,8 @@
                 var _this2 = this;
 
                 try {
-                    var registeredType = this._map.get(type);
-                    _assertIsDefined(registeredType, 'Type not registered:');
+                    var registeredType = typeof type === 'string' ? this._map.get(type) : type;
+                    _assertIsDefined(registeredType, 'Type ' + type + ' not registered:');
 
                     var typeOfResolve = typeof registeredType;
                     var injectProperty = (this._getInject(registeredType) || []).map(function (t) {
