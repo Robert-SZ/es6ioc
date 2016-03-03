@@ -108,7 +108,7 @@ describe('IoC', () => {
         ioc.registerType('TypeA', TypeA);
 
         should.throws(()=>ioc.resolve('TypeA'), function (error) {
-            return error instanceof TypeError && error.message.indexOf('Type not registered') > -1;
+            return error instanceof TypeError && error.message.indexOf('Type TypeD not registered') > -1;
         }, 'Type not registered error not detected');
 
     });
