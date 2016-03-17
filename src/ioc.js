@@ -36,6 +36,13 @@ function getError(error, type) {
     throw newError;
 }
 
+export function inject(...injects){
+    return (target)=>{
+        target.$inject = [...injects];
+        return target;
+    }
+}
+
 export default class Ioc {
     constructor() {
         this._map = {
